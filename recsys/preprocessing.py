@@ -79,6 +79,14 @@ def scale_ratings(dataframe, scaled_column="scaled_rating"):
 
 
 def ids_encoder(ratings):
+    """
+        1 userids and itemids encoding.
+        2 重新弄了一下rating。
+
+    @param ratings: Dataframe. Index(['userid', 'itemid', 'rating'], dtype='object')
+    :return dataframe, user LabelEncoder and item LabelEncoder.
+
+    """
     users = sorted(ratings['userid'].unique())
     items = sorted(ratings['itemid'].unique())
 
@@ -91,7 +99,13 @@ def ids_encoder(ratings):
     iencoder.fit(items)
 
     # encode userids and itemids
-    ratings.userid = uencoder.transform(ratings.userid.tolist())
-    ratings.itemid = iencoder.transform(ratings.itemid.tolist())
+    uid_list = ratings.userid.tolist()
+    userid = uencoder.transform(uid_list)
+    # print(ratings.userid.to_numpy())
+    # print(userid)
+    ratings.userid = userid
+
+    mid_list = ratings.itemid.tolist()
+    ratings.itemid = iencoder.transform(mid_list)
 
     return ratings, uencoder, iencoder
